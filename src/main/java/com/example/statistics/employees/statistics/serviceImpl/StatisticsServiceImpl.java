@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
@@ -23,7 +22,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public BigDecimal calculateOvertime(UUID employeeId) {
+    public BigDecimal calculateOvertime(Long employeeId) {
         List<WorkHours> workHoursList = workHoursRepository.findAllByEmployeeId(employeeId);
         return workHoursList.stream()
                 .map(WorkHours::getOvertime)
@@ -31,14 +30,14 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public BigDecimal calculateOvertimeBonuses(UUID employeeId) {
+    public BigDecimal calculateOvertimeBonuses(Long employeeId) {
         BigDecimal overtime = calculateOvertime(employeeId);
         BigDecimal bonusRate = new BigDecimal("10");
         return overtime.multiply(bonusRate);
     }
 
     @Override
-    public Object getProjectStatistics(UUID projectId) {
+    public Object getProjectStatistics(Long projectId) {
         List<WorkHours> workHoursList = workHoursRepository.findAllByProjectId(projectId);
         BigDecimal totalWorkedHours = workHoursList.stream()
                 .map(WorkHours::getWorkedHours)
@@ -55,7 +54,7 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public Object getWorkHoursForUser(UserDto userDto) {
-       List<WorkHours>  workHours = workHoursRepository.findAllByEmployeeId(userDto.getId());
+       List<WorkHours>  workHours = workHoursRepository.findAllByEmployeeId(userDto.getUserId());
         return new UserWorkHoursDto(userDto, workHours);
     }
 }
